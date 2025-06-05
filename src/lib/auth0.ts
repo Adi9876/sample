@@ -11,4 +11,8 @@ export const auth0 = new Auth0Client({
     login: "/api/auth/login",
     logout: "/api/auth/logout",
   },
+  session: {
+    absoluteDuration: 24 * 60 * 60, // 24 hours in seconds
+    rolling: true,
+  },
 });

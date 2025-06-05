@@ -6,11 +6,17 @@ export async function GET(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
   if (path.endsWith("/login")) {
-    return auth0.startInteractiveLogin({});
+    return auth0.startInteractiveLogin({
+      returnTo: process.env.AUTH0_BASE_URL || "http://localhost:3000",
+    });
   }
 
   if (path.endsWith("/callback")) {
     const response = await auth0.middleware(request);
+    if (response.status === 302) {
+      // Redirect to the home page after successful login
+      return NextResponse.redirect(new URL("/", request.url));
+    }
     return response;
   }
 
@@ -26,6 +32,10 @@ export async function POST(request: NextRequest) {
 
   if (path.endsWith("/callback")) {
     const response = await auth0.middleware(request);
+    if (response.status === 302) {
+      // Redirect to the home page after successful login
+      return NextResponse.redirect(new URL("/", request.url));
+    }
     return response;
   }
 
