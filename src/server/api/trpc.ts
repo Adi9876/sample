@@ -3,21 +3,21 @@ import { createClient } from "@supabase/supabase-js";
 import superjson from "superjson";
 import { auth0 } from "@/lib/auth0";
 import { NextRequest } from "next/server";
+import { headers } from "next/headers";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export const createTRPCContext = async ({
-  req,
-  res,
-}: {
-  req: NextRequest;
-  res: Response;
-}) => {
+export const createTRPCContext = async () => {
   try {
-    const session = await auth0.getSession(req);
+    const headersList = headers();
+    const session = await auth0.getSession(
+      new NextRequest("http://localhost:3000", {
+        headers: headersList,
+      })
+    );
     return {
       supabase,
       session,

@@ -15,7 +15,6 @@ export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
   },
 });
 
-// Types for our database
 export interface Conversation {
   id: string;
   user_id: string;

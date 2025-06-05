@@ -17,7 +17,7 @@ export default function Home() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const sidebarRef = useRef<HTMLDivElement>(null)
 
-  // TRPC queries and mutations
+
   const conversationsQuery = api.chat.getConversations.useQuery(undefined, {
     enabled: !!user,
   })
@@ -52,12 +52,12 @@ export default function Home() {
     },
   })
 
-  // Auto-scroll to bottom when new messages arrive
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messagesQuery.data])
 
-  // Auto-select first conversation if none selected
+
   useEffect(() => {
     if (conversationsQuery.data && conversationsQuery.data.length > 0 && !currentConversation) {
       setCurrentConversation(conversationsQuery.data[0].id)

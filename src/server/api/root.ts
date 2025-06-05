@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "./trpc";
 import { TRPCError } from "@trpc/server";
+import { generateTextResponse, generateImageResponse } from "@/lib/gemini";
 
 export const appRouter = createTRPCRouter({
-  chat: createTRPCRouter({
+  chat: {
     getConversations: publicProcedure.query(async ({ ctx }) => {
       const { supabase, session } = ctx;
       if (!session?.user) {
@@ -92,7 +93,7 @@ export const appRouter = createTRPCRouter({
         }
 
         // First, create the user message
-        const { data: userMessage, error: userMessageError } = await supabase
+        const { error: userMessageError } = await supabase
           .from("messages")
           .insert({
             conversation_id: input.conversationId,
@@ -110,12 +111,23 @@ export const appRouter = createTRPCRouter({
           });
         }
 
-        // TODO: Call AI API here based on messageType
-        // For now, just echo the message
-        const aiResponse =
-          input.messageType === "image"
-            ? "Image generation will be implemented here"
-            : `Echo: ${input.content}`;
+        // Call AI API based on messageType
+        let aiResponse: string;
+        try {
+          if (input.messageType === "image") {
+            aiResponse = await generateImageResponse(input.content);
+          } else {
+            aiResponse = await generateTextResponse(input.content);
+          }
+        } catch (error) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message:
+              error instanceof Error
+                ? error.message
+                : "Failed to generate AI response",
+          });
+        }
 
         const { data: aiMessage, error: aiMessageError } = await supabase
           .from("messages")
@@ -161,7 +173,7 @@ export const appRouter = createTRPCRouter({
 
         return { success: true };
       }),
-  }),
+  },
 });
 
 export type AppRouter = typeof appRouter;
