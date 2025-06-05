@@ -14,7 +14,7 @@ export const createTRPCContext = async () => {
   try {
     const headersList = headers();
     const session = await auth0.getSession(
-      new NextRequest("http://localhost:3000", {
+      new NextRequest(process.env.AUTH0_BASE_URL || "http://localhost:3000", {
         headers: headersList,
       })
     );
