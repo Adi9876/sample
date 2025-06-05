@@ -6,7 +6,13 @@ import Script from 'next/script'
 export const metadata = {
   title: 'ChatGPT Clone - Mobile',
   description: 'A mobile-first ChatGPT clone built with Next.js',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
 
 export default function RootLayout({

@@ -24,6 +24,7 @@
     "react-markdown": "^10.1.0",
     "superjson": "^2.2.2",
     "swr": "^2.3.3",
+    "vercel": "^42.3.0",
     "zod": "^3.25.49"
   },
   "devDependencies": {
